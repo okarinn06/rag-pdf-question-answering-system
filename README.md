@@ -110,6 +110,7 @@ RAG/
 - Python ≥ 3.11
 - An Groq API key
 - UV package manager
+- Docker
 
 
 ## Setup
@@ -146,25 +147,26 @@ cp .env.example .env
 
 Open **two terminals** from the project root (both with the venv activated).
 
-### Terminal 1 — Backend (FastAPI)
+### Terminal 
 
 ```bash
 .venv\Scripts\activate
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+# First time (build image)
+docker compose up --build
+
+# From next time
+docker compose up
+
+# Run in the background
+docker compose up -d
+
+# Stop
+docker compose down
 ```
 
 Interactive API docs → http://localhost:8000/docs
 
-### Terminal 2 — Frontend (Streamlit)
-
-```bash
-.venv\Scripts\activate
-streamlit run frontend/app.py
-```
-
 UI → http://localhost:8501
-
-
 
 ## Usage
 

@@ -1,6 +1,8 @@
 import requests
 import streamlit as st
+import os
 
+BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8000")
 API = "http://localhost:8000/api"
 
 st.set_page_config(page_title="RAG — Document Q&A", page_icon="📄", layout="centered")
