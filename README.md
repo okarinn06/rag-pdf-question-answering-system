@@ -117,7 +117,7 @@ RAG/
 ### 1 — Clone project
 
 ```bash
-git clone 
+git clone https://github.com/okarinn06/rag-pdf-question-answering-system.git
 ```
 
 ### 2 — Create and activate a virtual environment
