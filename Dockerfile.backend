@@ -1,17 +1,30 @@
 FROM python:3.12-slim
 
+# Lấy binary uv chính thức từ image của Astral
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 WORKDIR /app
 
-RUN pip install uv
+# faiss-cpu và pyPDF cần build tool hệ thống 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-dev
 
-COPY main.py ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+COPY main.py .
 COPY app/ ./app/
 
-ENV PATH = "/app/.venv/bin:$PATH"
+RUN uv sync --frozen --no-dev
 
-EXPOSE 8000
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PYTHONBUFFERED=1
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')" || exit 1
+
+CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
