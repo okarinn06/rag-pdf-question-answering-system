@@ -12,7 +12,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/okarinn06/rag-pdf-question-answering-system.git
+                    url: 'https://github.com/okarinn06/rag-pdf-question-answering-system.git'
             }
         }
 
