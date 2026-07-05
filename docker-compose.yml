@@ -1,27 +1,30 @@
+version: "3.8"
+
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
+  backend: 
+    image: ${DOCKERHUB_USERNAME}/rag-pdf-backend:${IMAGE_TAG:-latest}
+    container_name: rag-backend
     ports:
-      - "8000:8000"
+      -"8000:8000"
     env_file:
       - .env
-    healthcheck:
-      test: ["CMD", "curl", "f", "http://localhost:8000/api/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 20s
+    restart: unless-stoped
+    networks:
+      - rag-net
 
   frontend:
-    build:
-      context: .
-      dockerfile: Dockerfile.frontend
+    image: ${DOCKERHUB_USERNAME}/rag-pdf-frontend:${IMAGE_TAG:-latest}
+    container_name: rag-frontend
     ports:
       - "8501:8501"
     environment:
-      - BACKEND_URL=http://backend:8000
+      - BACKEND_URL=http://192.168.116.110:8000
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
+    restart: unless-stopped
+    networks:
+      - rag-net
+ 
+networks:
+  rag-net:
+    driver: bridge
